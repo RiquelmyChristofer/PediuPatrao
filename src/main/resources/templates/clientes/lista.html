@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Clientes</title></head>
+<body>
+<div th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="bi bi-person-raised-hand me-2 text-primary"></i>Clientes</h2>
+        <a th:if="${perfilAtendente}" th:href="@{/clientes/novo}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>Novo Cliente
+        </a>
+    </div>
+    <div class="alert alert-success alert-dismissible fade show" th:if="${sucesso}" role="alert">
+        <span th:text="${sucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show" th:if="${erro}" role="alert">
+        <span th:text="${erro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+    <div id="clientes-feedback" class="alert d-none" role="alert"></div>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                <tr><th>Nome</th><th>Telefone</th><th>Endereço</th><th th:if="${perfilAtendente}">Ações</th></tr>
+                </thead>
+                <tbody id="clientes-tabela"></tbody>
+            </table>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        (() => {
+            const tabela = document.getElementById('clientes-tabela');
+            const feedback = document.getElementById('clientes-feedback');
+            const podeEditar = /*[[${perfilAtendente}]]*/ false;
+            const token = document.querySelector('meta[name="_csrf"]')?.content;
+            const headerName = document.querySelector('meta[name="_csrf_header"]')?.content || 'X-XSRF-TOKEN';
+
+            function endereco(cliente) {
+                return [
+                    cliente.logradouro, cliente.numero, cliente.complemento,
+                    cliente.bairro, cliente.cidade, cliente.estado
+                ].filter(Boolean).join(', ') || cliente.endereco || '—';
+            }
+
+            function adicionarCelula(linha, valor) {
+                const celula = document.createElement('td');
+                celula.textContent = valor || '—';
+                linha.appendChild(celula);
+            }
+
+            async function carregarClientes() {
+                const response = await fetch('/api/clientes');
+                await window.apiFeedback.verificarRespostaApi(response, 'Não foi possível carregar os clientes.');
+                const clientes = await response.json();
+                tabela.replaceChildren();
+                if (clientes.length === 0) {
+                    const linha = document.createElement('tr');
+                    const celula = document.createElement('td');
+                    celula.colSpan = podeEditar ? 4 : 3;
+                    celula.className = 'text-center text-muted py-5';
+                    celula.textContent = 'Nenhum cliente cadastrado.';
+                    linha.appendChild(celula);
+                    tabela.appendChild(linha);
+                    return;
+                }
+
+                clientes.forEach(cliente => {
+                    const linha = document.createElement('tr');
+                    adicionarCelula(linha, cliente.nome);
+                    adicionarCelula(linha, cliente.telefone);
+                    adicionarCelula(linha, endereco(cliente));
+                    if (podeEditar) {
+                        const acoes = document.createElement('td');
+                        const editar = document.createElement('a');
+                        editar.href = `/clientes/editar/${encodeURIComponent(cliente.id)}`;
+                        editar.className = 'btn btn-sm btn-outline-primary me-1';
+                        editar.textContent = 'Editar';
+                        const excluir = document.createElement('button');
+                        excluir.type = 'button';
+                        excluir.className = 'btn btn-sm btn-outline-danger';
+                        excluir.textContent = 'Excluir';
+                        excluir.addEventListener('click', () => excluirCliente(cliente.id).catch(error => {
+                            feedback.className = 'alert alert-danger';
+                            feedback.textContent = window.apiFeedback.mensagemFalha(error, 'Não foi possível excluir o cliente.');
+                        }));
+                        acoes.append(editar, excluir);
+                        linha.appendChild(acoes);
+                    }
+                    tabela.appendChild(linha);
+                });
+            }
+
+            async function excluirCliente(id) {
+                if (!window.confirm('Tem certeza que deseja excluir este cliente?')) return;
+                const headers = new Headers();
+                headers.set(headerName, token);
+                const response = await fetch(`/api/clientes/${encodeURIComponent(id)}`, {
+                    method: 'DELETE',
+                    headers
+                });
+                await window.apiFeedback.verificarRespostaApi(response, 'Não foi possível excluir o cliente.');
+                await carregarClientes();
+                feedback.className = 'alert alert-success';
+                feedback.textContent = 'Cliente excluído com sucesso.';
+            }
+
+            carregarClientes().catch(error => {
+                feedback.className = 'alert alert-danger';
+                feedback.textContent = window.apiFeedback.mensagemFalha(error, 'Não foi possível carregar os clientes.');
+            });
+        })();
+    </script>
+</div>
+</body>
+</html>

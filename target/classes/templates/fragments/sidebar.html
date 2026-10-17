@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="sidebar">
+    <div id="sidebar">
+        <h4 class="text-center py-3">Pediu Patrão</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/}">
+                    <i class="bi bi-house"></i><span class="d-none d-md-inline">&nbsp;Home</span>
+                </a>
+            </li>
+            <li class="nav-item" th:if="${perfilAtendente or perfilGerente}">
+                <a class="nav-link" th:href="@{/clientes}">
+                    <i class="bi bi-person-raised-hand"></i><span class="d-none d-md-inline">&nbsp;Clientes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/pedidos}">
+                    <i class="bi bi-bag"></i><span class="d-none d-md-inline">&nbsp;Pedidos</span>
+                </a>
+            </li>
+            <li class="nav-item" th:if="${perfilAdmin}">
+                <a class="nav-link" th:href="@{/produtos}">
+                    <i class="bi bi-boxes"></i><span class="d-none d-md-inline">&nbsp;Produtos</span>
+                </a>
+            </li>
+            <li class="nav-item" th:if="${perfilAdmin}">
+                <a class="nav-link" th:href="@{/usuarios}">
+                    <i class="bi bi-people-fill"></i><span class="d-none d-md-inline">&nbsp;Usuários</span>
+                </a>
+            </li>
+            <li class="nav-item" th:if="${perfilAdmin or perfilGerente}">
+                <a class="nav-link" th:href="@{/auditoria}">
+                    <i class="bi bi-clock-history"></i><span class="d-none d-md-inline">&nbsp;Auditoria</span>
+                </a>
+            </li>
+            <li class="nav-item mt-3">
+                <form th:action="@{/logout}" method="post">
+                    <button class="nav-link border-0 bg-transparent w-100 text-start" type="submit">
+                        <i class="bi bi-box-arrow-right"></i><span class="d-none d-md-inline">&nbsp;Sair</span>
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
