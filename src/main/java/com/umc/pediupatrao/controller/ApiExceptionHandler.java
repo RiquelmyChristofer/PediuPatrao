@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -27,6 +28,13 @@ public class ApiExceptionHandler {
     public ResponseEntity<Map<String, String>> handleInvalidRequest(Exception exception) {
         return ResponseEntity.badRequest()
                 .body(Map.of("erro", "Confira os dados informados e tente novamente."));
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, String>> handleTypeMismatch(MethodArgumentTypeMismatchException exception) {
+        return ResponseEntity.badRequest()
+                .body(Map.of("erro", "Parâmetro '" + exception.getName()
+                        + "' inválido. Datas devem seguir o formato AAAA-MM-DD e números devem ser inteiros."));
     }
 
     private String mensagem(Exception exception, String padrao) {
