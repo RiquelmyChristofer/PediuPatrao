@@ -257,10 +257,10 @@
     // ---------- carga de dados (RF06/RF07)
     var SECOES = [
         { chave: 'kpis', carregar: function () { return buscar('/resumo'); }, render: renderResumo, aviso: false },
-        { chave: 'vendas', carregar: function () { return buscar('/vendas', { agrupamento: $('f-agrupamento').value }); }, render: renderVendas },
-        { chave: 'status', carregar: function () { return buscar('/pedidos-por-status'); }, render: renderStatus },
-        { chave: 'horas', carregar: function () { return buscar('/vendas-por-hora'); }, render: renderHoras },
-        { chave: 'categorias', carregar: function () { return buscar('/vendas-por-categoria'); }, render: renderCategorias },
+        { chave: 'vendas', grafico: 'c-vendas', carregar: function () { return buscar('/vendas', { agrupamento: $('f-agrupamento').value }); }, render: renderVendas },
+        { chave: 'status', grafico: 'c-status', carregar: function () { return buscar('/pedidos-por-status'); }, render: renderStatus },
+        { chave: 'horas', grafico: 'c-horas', carregar: function () { return buscar('/vendas-por-hora'); }, render: renderHoras },
+        { chave: 'categorias', grafico: 'c-categorias', carregar: function () { return buscar('/vendas-por-categoria'); }, render: renderCategorias },
         { chave: 'ranking', carregar: function () { return buscar('/produtos-mais-vendidos', { limite: 10, ordenarPor: $('f-ordenar').value }); }, render: renderRanking },
         { chave: 'recentes', carregar: function () { return buscar('/pedidos-recentes', { limite: 10 }); }, render: renderRecentes }
     ];
@@ -278,6 +278,7 @@
                 s.render(dados);
                 return null;
             }).catch(function (e) {
+                if (s.grafico) limparGrafico(s.grafico);   // não deixa gráfico desatualizado ao lado do erro
                 estado(s.chave, 'erro', 'Não foi possível carregar: ' + e.message);
                 return e.message;
             });
