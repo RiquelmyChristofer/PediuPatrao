@@ -43,7 +43,7 @@ Os testes cobrem serviços de pedidos e clientes, auditoria, autorização, carr
 4. Volte como `ADMIN` ou `GERENTE` e consulte a auditoria: confira ator, perfil, ação e campos alterados, verificando que telefone/endereço estão mascarados.
 5. Se houver tempo, solicite recuperação de senha para uma conta com e-mail cadastrado; abra o link no mesmo host indicado por `APP_BASE_URL`, antes de 30 minutos, e confirme que uma nova senha funciona.
 
-Consulte o `README.md` para o roteiro detalhado de validação manual e as instruções de execução. Confirme no enunciado da atividade se é exigido vídeo ou outra evidência de demonstração.
+Consulte o `README.md` para o roteiro detalhado de validação manual e as instruções de execução.
 
 
 ## Dashboard administrativo (Atividade M1 – Parte 2)
