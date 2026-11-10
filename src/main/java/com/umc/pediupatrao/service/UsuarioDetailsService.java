@@ -25,7 +25,7 @@ public class UsuarioDetailsService implements UserDetailsService {
                 if (role.startsWith("ROLE_")) role = role.substring(5);
                 if (role.equals("USER") || role.equals("FUNCIONARIO")) role = "ATENDENTE";
                 if (!role.equals("ADMIN") && !role.equals("GERENTE") && !role.equals("ATENDENTE")) {
-                    role = "ATENDENTE";
+                    throw new UsernameNotFoundException("Perfil inválido para o usuário " + usuario.getUsername());
                 }
                 return User.builder()
                     .username(usuario.getUsername())

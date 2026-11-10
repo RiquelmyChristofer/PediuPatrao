@@ -13,6 +13,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 class UsuarioDetailsServiceTest {
     @AfterEach
@@ -31,6 +32,15 @@ class UsuarioDetailsServiceTest {
                 .contains(new SimpleGrantedAuthority("ROLE_GERENTE")));
         assertTrue(service.loadUserByUsername("funcionario").getAuthorities()
                 .contains(new SimpleGrantedAuthority("ROLE_ATENDENTE")));
+    }
+
+    @Test
+    void perfilDesconhecidoImpedeCarregamentoParaLogin() {
+        var repository = org.mockito.Mockito.mock(UsuarioRepository.class);
+        var service = new UsuarioDetailsService(repository);
+        when(repository.findByUsername("ana")).thenReturn(Optional.of(usuario("SUPERVISOR")));
+
+        assertThrows(UsernameNotFoundException.class, () -> service.loadUserByUsername("ana"));
     }
 
     @Test

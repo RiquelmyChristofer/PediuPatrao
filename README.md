@@ -33,15 +33,15 @@ Execute na pasta `PediuPatrao`:
 .\mvnw.cmd test
 ```
 
-A última execução registrada passou com 13 testes, sem falhas. Os testes cobrem serviços de pedidos, clientes, carregamento de usuários, recuperação de senha e respostas de erro da API.
+Os testes cobrem serviços de pedidos e clientes, auditoria, autorização, carregamento de perfis, recuperação de senha e respostas de erro da API.
 
-## Verificações de demonstração ainda recomendadas
+## Roteiro de demonstração dos três perfis
 
-1. Validar os três perfis de usuário e confirmar acessos permitidos/negados nas páginas e rotas.
-2. Criar e avançar um pedido pelo fluxo válido; conferir horários e responsáveis.
-3. Tentar uma transição inválida, desconto acima de 20% e cancelamento após saída.
-4. Conferir os registros de auditoria como ADMIN ou GERENTE.
-5. Solicitar recuperação de senha usando uma conta com e-mail cadastrado; abrir o link no mesmo host indicado por `APP_BASE_URL`, antes de 30 minutos, e confirmar que uma nova senha funciona.
+1. Inicie o MongoDB e a aplicação. Entre como `admin` / `teste123` (conta de desenvolvimento, se ainda não tiver sido alterada) e mostre a administração de usuários e produtos. Crie ou confirme uma conta de perfil `GERENTE` e outra `ATENDENTE`.
+2. Em uma sessão separada, entre como `GERENTE`: consulte clientes, pedidos e auditoria; aplique um desconto de até 20% e, se possível, cancele um pedido antes da saída com justificativa. Confirme que uma tentativa de acessar a administração de usuários é negada.
+3. Em outra sessão, entre como `ATENDENTE`: cadastre um cliente e registre/avance um pedido pelas etapas permitidas. Confirme que a auditoria não pode ser consultada e que ações exclusivas de gerente/admin são negadas.
+4. Volte como `ADMIN` ou `GERENTE` e consulte a auditoria: confira ator, perfil, ação e campos alterados, verificando que telefone/endereço estão mascarados.
+5. Se houver tempo, solicite recuperação de senha para uma conta com e-mail cadastrado; abra o link no mesmo host indicado por `APP_BASE_URL`, antes de 30 minutos, e confirme que uma nova senha funciona.
 
 Consulte o `README.md` para o roteiro detalhado de validação manual e as instruções de execução. Confirme no enunciado da atividade se é exigido vídeo ou outra evidência de demonstração.
 
