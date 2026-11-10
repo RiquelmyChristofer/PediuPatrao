@@ -1,7 +1,9 @@
 package com.umc.pediupatrao.service;
 
 import com.umc.pediupatrao.entity.Usuario;
+import com.umc.pediupatrao.entity.CampoAuditado;
 import com.umc.pediupatrao.repository.UsuarioRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.access.AccessDeniedException;
@@ -43,7 +45,8 @@ public class UsuarioService {
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         Usuario salvo = usuarioRepository.save(usuario);
         auditoriaService.registrar(novo ? "CRIACAO" : "ATUALIZACAO", "USUARIO", salvo.getId(),
-                "Perfil " + salvo.getRole() + " para usuário " + salvo.getUsername());
+                "Perfil " + salvo.getRole() + " para usuário " + salvo.getUsername(),
+                List.of(new CampoAuditado("perfil", null, salvo.getRole())));
         return salvo;
     }
 
@@ -66,6 +69,7 @@ public class UsuarioService {
     public void atualizarUsuario(String id, Usuario atualizado) {
         Usuario existente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+        String perfilAnterior = existente.getRole();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (atualizado.getUsername() == null || atualizado.getUsername().isBlank()) {
             throw new IllegalArgumentException("O nome de usuário é obrigatório.");
@@ -96,8 +100,11 @@ public class UsuarioService {
             existente.setPassword(passwordEncoder.encode(atualizado.getPassword()));
         }
         Usuario salvo = usuarioRepository.save(existente);
+        List<CampoAuditado> camposAlterados = java.util.Objects.equals(perfilAnterior, salvo.getRole())
+                ? List.of()
+                : List.of(new CampoAuditado("perfil", perfilAnterior, salvo.getRole()));
         auditoriaService.registrar("ATUALIZACAO", "USUARIO", id,
-                "Dados/perfil atualizados para usuário " + salvo.getUsername());
+                "Dados/perfil atualizados para usuário " + salvo.getUsername(), camposAlterados);
     }
 
     private String normalizarRole(String role) {

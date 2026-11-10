@@ -35,9 +35,11 @@ class ClienteServiceTest {
         Cliente anterior = new Cliente();
         anterior.setId("cliente-1");
         anterior.setNome("Ana");
-        anterior.setTelefone("1111");
+        anterior.setTelefone("(11) 99999-1234");
         anterior.setLogradouro("Rua A");
         anterior.setNumero("10");
+        anterior.setComplemento("Casa antiga");
+        anterior.setCep("01000-000");
         when(clienteRepository.findById("cliente-1")).thenReturn(Optional.of(anterior));
         when(clienteRepository.save(any(Cliente.class))).thenAnswer(invocation -> invocation.getArgument(0));
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
@@ -46,9 +48,11 @@ class ClienteServiceTest {
         Cliente atualizado = new Cliente();
         atualizado.setId("cliente-1");
         atualizado.setNome("Ana");
-        atualizado.setTelefone("2222");
+        atualizado.setTelefone("(11) 98888-4321");
         atualizado.setLogradouro("Rua B");
-        atualizado.setNumero("10");
+        atualizado.setNumero("20");
+        atualizado.setComplemento("Apto 2");
+        atualizado.setCep("02000-000");
         clienteService.salvar(atualizado);
 
         ArgumentCaptor<RegistroAuditoria> captor = ArgumentCaptor.forClass(RegistroAuditoria.class);
@@ -56,10 +60,16 @@ class ClienteServiceTest {
         RegistroAuditoria registro = captor.getValue();
         assertEquals("atendente01", registro.getUsuario());
         assertEquals("ATENDENTE", registro.getPerfil());
-        assertEquals("1111", valor(registro, "telefone", true));
-        assertEquals("2222", valor(registro, "telefone", false));
-        assertEquals("Rua A", valor(registro, "logradouro", true));
-        assertEquals("Rua B", valor(registro, "logradouro", false));
+        assertEquals("(11) *****-1234", valor(registro, "telefone", true));
+        assertEquals("(11) *****-4321", valor(registro, "telefone", false));
+        assertEquals("alterado", valor(registro, "logradouro", true));
+        assertEquals("alterado", valor(registro, "logradouro", false));
+        assertEquals("alterado", valor(registro, "numero", true));
+        assertEquals("alterado", valor(registro, "numero", false));
+        assertEquals("alterado", valor(registro, "complemento", true));
+        assertEquals("alterado", valor(registro, "complemento", false));
+        assertEquals("alterado", valor(registro, "cep", true));
+        assertEquals("alterado", valor(registro, "cep", false));
     }
 
     private String valor(RegistroAuditoria registro, String nomeCampo, boolean anterior) {
