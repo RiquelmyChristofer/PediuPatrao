@@ -44,3 +44,10 @@ A última execução registrada passou com 13 testes, sem falhas. Os testes cobr
 5. Solicitar recuperação de senha usando uma conta com e-mail cadastrado; abrir o link no mesmo host indicado por `APP_BASE_URL`, antes de 30 minutos, e confirmar que uma nova senha funciona.
 
 Consulte o `README.md` para o roteiro detalhado de validação manual e as instruções de execução. Confirme no enunciado da atividade se é exigido vídeo ou outra evidência de demonstração.
+
+
+## Dashboard administrativo (Atividade M1 – Parte 2)
+
+Painel em `/dashboard` (perfis ADMIN e GERENTE) alimentado pela API `/api/dashboard/**`.
+Documentação completa (requisitos, endpoints, testes, roteiro de vídeo): [`docs/ATIVIDADE2_DASHBOARD.md`](docs/ATIVIDADE2_DASHBOARD.md).
+Para demonstrar com dados fictícios: `./mvnw spring-boot:run -Dspring-boot.run.profiles=demo`.

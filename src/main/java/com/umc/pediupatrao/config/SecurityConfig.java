@@ -59,6 +59,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/auditoria", "/auditoria/**",
                         "/api/auditoria", "/api/auditoria/**").hasAnyRole("ADMIN", "GERENTE")
                 .requestMatchers("/auditoria", "/auditoria/**", "/api/auditoria", "/api/auditoria/**").denyAll()
+                .requestMatchers("/dashboard", "/dashboard/**", "/api/dashboard", "/api/dashboard/**")
+                        .hasAnyRole("ADMIN", "GERENTE")
                 .requestMatchers(HttpMethod.GET, "/api/produtos", "/api/produtos/**").hasAnyRole("ADMIN", "GERENTE", "ATENDENTE")
                 .requestMatchers("/api/produtos", "/api/produtos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/clientes", "/api/clientes/**").hasAnyRole("GERENTE", "ATENDENTE")

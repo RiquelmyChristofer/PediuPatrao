@@ -31,6 +31,11 @@
                 </a>
             </li>
             <li class="nav-item" th:if="${perfilAdmin or perfilGerente}">
+                <a class="nav-link" th:href="@{/dashboard}">
+                    <i class="bi bi-graph-up-arrow"></i><span class="d-none d-md-inline">&nbsp;Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item" th:if="${perfilAdmin or perfilGerente}">
                 <a class="nav-link" th:href="@{/auditoria}">
                     <i class="bi bi-clock-history"></i><span class="d-none d-md-inline">&nbsp;Auditoria</span>
                 </a>
