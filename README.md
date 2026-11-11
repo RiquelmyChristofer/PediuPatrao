@@ -45,6 +45,9 @@ Os testes cobrem serviços de pedidos e clientes, auditoria, autorização, carr
 
 Consulte o `README.md` para o roteiro detalhado de validação manual e as instruções de execução.
 
+## Vídeo da demonstração
+
+[Assistir ou baixar o vídeo do Pediu Patrão](docs/Video_PediuPatrao.mp4).
 
 ## Dashboard administrativo (Atividade M1 – Parte 2)
 
